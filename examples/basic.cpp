@@ -19,7 +19,6 @@ unsigned long int timerr = 0;
 void loop() {
     test->gsm_mqtt_loop();
     if(test->timeout(timerr)){
-       Serial.println(sensor_data());
         timerr = test->set_time(60000*5);
         test->pub("Hello world","data");
     }else{
