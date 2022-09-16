@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include "gsm_mqtt.h"
-#include "secrets.h"
 
 gsm_mqtt *test;
 
