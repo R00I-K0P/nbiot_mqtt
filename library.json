@@ -19,6 +19,7 @@
     "license": "Coming soon",
     "homepage": "none",
     "dependencies": {
+      "einararnason/ArduinoQueue":"^1.2.5"
     },
     "frameworks": "*",
     "platforms": "*"
