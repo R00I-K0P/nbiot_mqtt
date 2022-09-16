@@ -12,7 +12,7 @@ void mqtt_callback(String topic, String message){
 void setup() {
     Serial.begin(115200);
     while(!Serial);
-    test = new gsm_mqtt(SERVER,COMMAND_TOPIC+"/command/zero",mqtt_callback);
+    test = new gsm_mqtt("test.mosquitto.org","commands",mqtt_callback);
 }
 
 unsigned long int timerr = 0;
@@ -21,7 +21,7 @@ void loop() {
     if(test->timeout(timerr)){
        Serial.println(sensor_data());
         timerr = test->set_time(60000*5);
-        test->pub("Hello world","test");
+        test->pub("Hello world","data");
     }else{
         return;
     }
