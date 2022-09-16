@@ -3,8 +3,6 @@
 hanco.hw@gmail.com
 */
 #include "gsm_mqtt.h"
-// #include <Wire.h>
-// #include <SPI.h>
 #include <ArduinoQueue.h>
 
 gsm_mqtt::gsm_mqtt(String server,String sub_topic,void (*subscribe_callback)(String topic,String message)){
