@@ -125,7 +125,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
     case STATES::MQTT_CONNECTING:{
-      String response = write_data("AT+CMQCON=0,3,\"1\",600,1,0");
+      String response = write_data("AT+CMQCON=0,3,\""+String(random(1000000))+"\",600,1,0");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::MQTT_SUBSCRIBING;
