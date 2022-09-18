@@ -137,7 +137,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
     case STATES::MQTT_SUBSCRIBING:{
-      String response = write_data("AT+CMQSUB=0,\""+Sub_topic+"\",1");
+      String response = write_data("AT+CMQSUB=0,\""+Topic+"\",1");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::PUB;
