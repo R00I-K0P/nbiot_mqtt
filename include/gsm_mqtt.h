@@ -13,7 +13,7 @@ hanco.hw@gmail.com
 #define applicationversion ccfccnadblapdp7slkg0-v1
 class gsm_mqtt{
     public:
-        gsm_mqtt(String server,String sub_topic,void (*subscribe_callback)(String topic,String message));
+        gsm_mqtt(String server,String port,String topic,void (*subscribe_callback)(String topic,String message));
         ~gsm_mqtt();
         void gsm_mqtt_loop();
         bool pub(String topic,String data);
