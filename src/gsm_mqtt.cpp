@@ -5,11 +5,12 @@ hanco.hw@gmail.com
 #include "gsm_mqtt.h"
 #include <ArduinoQueue.h>
 
-gsm_mqtt::gsm_mqtt(String server,String sub_topic,void (*subscribe_callback)(String topic,String message)){
+gsm_mqtt::gsm_mqtt(String server,String port,String topic,void (*subscribe_callback)(String topic,String message)){
   Subscribe_Callback = subscribe_callback;
   state = state_next = STATES::POWER_CYCLE;
   Server = server;
-  Sub_topic = sub_topic;
+  Port = port;
+  Topic = topic;
   pub_messages = new ArduinoQueue<Message> (10);
   gsm_serial = new UART(0,1);
   pinMode(14,OUTPUT);
@@ -114,7 +115,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
     case STATES::NEW_MQTT_INSTANCE:{
-      String response = write_data("AT+CMQNEW=\""+Server+"\",1883,12000,1024");
+      String response = write_data("AT+CMQNEW=\""+Server+"\","+Port+",12000,1024");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::MQTT_CONNECTING;

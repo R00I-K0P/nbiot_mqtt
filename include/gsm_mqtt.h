@@ -22,7 +22,8 @@ class gsm_mqtt{
     private:
         void (*Subscribe_Callback)(String topic,String message);
         String Server;
-        String Sub_topic;
+        String Port;
+        String Topic;
         typedef struct Message{
             String topic;
             String message;
