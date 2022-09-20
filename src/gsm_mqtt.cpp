@@ -60,6 +60,19 @@ void gsm_mqtt::power_cycle(){
 }
 
 void gsm_mqtt::gsm_mqtt_loop(){
+  blink(state+1);
+  if(state != state_next){
+    String response = write_data("AT+CBC");
+    if(response != ""){
+        String vol = response.substring(response.indexOf(",")+1);
+        batt_voltage = vol.toInt();
+        Serial.println("Battery voltage:"+String(batt_voltage));
+    }else{
+      return;
+    }
+    print_heading(states[state]+" -> "+states[state_next]);
+    state = state_next;
+  }
   switch (state){
     case STATES::POWER_CYCLE:{
       power_cycle();
@@ -162,6 +175,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       pub_state();
       break;
     }
+    
     case STATES::SUB:{
       if(!pub_messages->isEmpty()){
         state_next = STATES::PUB;
@@ -170,12 +184,8 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
   }
-  if(state != state_next){
-    print_heading(states[state]+" -> "+states[state_next]);
-    state = state_next;
-  }
-  blink(state+1);
 }
+
 
 
 unsigned long connection_counter = 0;
@@ -255,8 +265,10 @@ bool sent = false;
 String gsm_mqtt::write_data(String data){
   if(timeout(write_timer)){
     if(!sent){
-      print_heading("Data",true);
-      Serial.println(data);
+      if(data != "AT+CBC") {
+        print_heading("Data",true);
+        Serial.println(data);
+      }
       gsm_serial->println(data);
       write_timer = set_time(60000);
       sent = true;
@@ -268,9 +280,11 @@ String gsm_mqtt::write_data(String data){
   String response = poll();
   if(response != ""){
     write_timer = 0;
-    print_heading("Response",true);
-    Serial.println("\""+response+"\"");
-    write_timer = set_time(5000);
+    if(data != "AT+CBC"){
+      print_heading("Response",true);
+      Serial.println("\""+response+"\"");
+    }
+    write_timer = set_time(2000);
     sent = false;
   }
   return response;

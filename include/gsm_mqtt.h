@@ -19,6 +19,8 @@ class gsm_mqtt{
         bool pub(String topic,String data);
         bool timeout(unsigned long timer);
         unsigned long set_time(unsigned long time);
+        int batt_voltage = 0;
+
     private:
         void (*Subscribe_Callback)(String topic,String message);
         String Server;
@@ -29,6 +31,7 @@ class gsm_mqtt{
             String message;
         }Message;
         ArduinoQueue<Message> *pub_messages;
+        ArduinoQueue<String> *at_commands;
         enum STATES{
         POWER_CYCLE,
         SET_ECHO,
