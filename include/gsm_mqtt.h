@@ -16,7 +16,7 @@ class gsm_mqtt{
         gsm_mqtt(String server,String port,String topic,void (*subscribe_callback)(String topic,String message));
         ~gsm_mqtt();
         void gsm_mqtt_loop();
-        bool pub(String topic,String data);
+        bool pub(String topic,String message);
         bool timeout(unsigned long timer);
         unsigned long set_time(unsigned long time);
         int batt_voltage = 0;

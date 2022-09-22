@@ -223,7 +223,7 @@ void gsm_mqtt::pub_state(){
     }
   }
 }
-bool gsm_mqtt::pub(String message,String topic){
+bool gsm_mqtt::pub(String topic,String message){
   Message msg = {topic,message};
   return pub_messages->enqueue(msg);
 }
