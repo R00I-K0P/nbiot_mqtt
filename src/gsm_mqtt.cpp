@@ -11,7 +11,7 @@ gsm_mqtt::gsm_mqtt(String server,String port,String topic,void (*subscribe_callb
   Port = port;
   Topic = topic;
   pub_messages = new ArduinoQueue<Message> (10);
-  gsm_serial = new UART(0,1);
+  gsm_serial = new SoftwareSerial(0,1);
   pinMode(14,OUTPUT);
 }
 gsm_mqtt::~gsm_mqtt(){
