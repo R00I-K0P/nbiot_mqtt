@@ -6,8 +6,9 @@ hanco.hw@gmail.com
 #define GSM_MQTT_H
 #define TRIESOUT 30
 #include <Arduino.h>
-#include <hardware/uart.h>
+// #include <hardware/uart.h>
 #include <ArduinoQueue.h>
+#include <SoftwareSerial.h>
 
 #define endpointtoken UCDIWQfdBr
 #define applicationversion ccfccnadblapdp7slkg0-v1
@@ -45,7 +46,7 @@ class gsm_mqtt{
         MQTT_SUBSCRIBING,
         MQTT_DISCONNECT,
         PUB,
-        SUB} state,state_next;
+        SUB} state = STATES::POWER_CYCLE ,state_next = STATES::POWER_CYCLE;
         String states[13] = {
         "POWER_CYCLE",
         "SET_ECHO",
@@ -61,7 +62,7 @@ class gsm_mqtt{
         "PUB",
         "SUB"};
 
-        UART* gsm_serial = NULL;
+        SoftwareSerial* gsm_serial = NULL;
         void sub_handler(String sub_raw);
         String to_hex(String string);
         void print_heading(String title,bool sub_heading = false);

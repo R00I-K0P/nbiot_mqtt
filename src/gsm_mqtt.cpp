@@ -7,7 +7,6 @@ hanco.hw@gmail.com
 
 gsm_mqtt::gsm_mqtt(String server,String port,String topic,void (*subscribe_callback)(String topic,String message)){
   Subscribe_Callback = subscribe_callback;
-  state = state_next = STATES::POWER_CYCLE;
   Server = server;
   Port = port;
   Topic = topic;
@@ -15,17 +14,14 @@ gsm_mqtt::gsm_mqtt(String server,String port,String topic,void (*subscribe_callb
   gsm_serial = new UART(0,1);
   pinMode(14,OUTPUT);
 }
-
 gsm_mqtt::~gsm_mqtt(){
   delete pub_messages;
   delete gsm_serial;
 }
-
 bool OK(String response){
   if(response.indexOf("OK") != -1) return true;
   return false;
 }
-
 enum CYCLE{TURN_OFF,TURN_ON,TURN_SETUP};
 CYCLE cycle = CYCLE::TURN_OFF;
 unsigned long cycle_timer = 0;
@@ -58,7 +54,6 @@ void gsm_mqtt::power_cycle(){
     }
   }
 }
-
 void gsm_mqtt::gsm_mqtt_loop(){
   blink(state+1);
   if(state != state_next){
@@ -175,7 +170,6 @@ void gsm_mqtt::gsm_mqtt_loop(){
       pub_state();
       break;
     }
-    
     case STATES::SUB:{
       if(!pub_messages->isEmpty()){
         state_next = STATES::PUB;
@@ -185,9 +179,6 @@ void gsm_mqtt::gsm_mqtt_loop(){
     }
   }
 }
-
-
-
 unsigned long connection_counter = 0;
 void gsm_mqtt::apn_connecting_info(){
   String response = write_data("AT+CGCONTRDP");
@@ -227,7 +218,6 @@ bool gsm_mqtt::pub(String topic,String message){
   Message msg = {topic,message};
   return pub_messages->enqueue(msg);
 }
-
 void gsm_mqtt::sub_handler(String sub_raw){
   sub_raw.remove(0,sub_raw.indexOf("\"")+1);
   String topic = sub_raw.substring(0,sub_raw.indexOf("\""));
@@ -236,10 +226,8 @@ void gsm_mqtt::sub_handler(String sub_raw){
   String message_hex = sub_raw.substring(0,sub_raw.indexOf("\""));
   Subscribe_Callback(topic,toascii(message_hex));
 }
-
 String gsm_mqtt::to_hex(String string){
   char* hexStr = (char*)malloc(sizeof(char)*string.length()*2+1);
-
   for (int i = 0; i < string.length(); i++)
       sprintf(hexStr + i*2, "%X", string[i]);
 
@@ -248,7 +236,6 @@ String gsm_mqtt::to_hex(String string){
   delete hexStr;
   return new_string;
 }
-
 String gsm_mqtt::toascii(String hex){
   Serial.println(hex);
    String ascii = "";
@@ -259,7 +246,6 @@ String gsm_mqtt::toascii(String hex){
    }
    return ascii;
 }
-
 unsigned long write_timer = 0;
 bool sent = false;
 String gsm_mqtt::write_data(String data){
@@ -289,7 +275,6 @@ String gsm_mqtt::write_data(String data){
   }
   return response;
 }
-
 String gsm_mqtt::poll(){
   if(gsm_serial->available() > 0){
     String response = gsm_serial->readString();
@@ -337,8 +322,6 @@ bool gsm_mqtt::timeout(unsigned long timer){
 unsigned long gsm_mqtt::set_time(unsigned long time){
   return millis() + time;
 }
-
-
 enum BLINK{ON,OFF,DELAY};
 BLINK Blink = BLINK::DELAY;
 int blink_time = 0;
