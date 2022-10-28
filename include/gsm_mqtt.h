@@ -6,12 +6,9 @@ hanco.hw@gmail.com
 #define GSM_MQTT_H
 #define TRIESOUT 30
 #include <Arduino.h>
-// #include <hardware/uart.h>
 #include <ArduinoQueue.h>
 #include <SoftwareSerial.h>
 
-#define endpointtoken UCDIWQfdBr
-#define applicationversion ccfccnadblapdp7slkg0-v1
 class gsm_mqtt{
     public:
         gsm_mqtt(String server,String port,String topic,void (*subscribe_callback)(String topic,String message));
@@ -21,7 +18,6 @@ class gsm_mqtt{
         bool timeout(unsigned long timer);
         unsigned long set_time(unsigned long time);
         int batt_voltage = 0;
-
     private:
         void (*Subscribe_Callback)(String topic,String message);
         String Server;
@@ -61,8 +57,7 @@ class gsm_mqtt{
         "MQTT_DISCONNECT",
         "PUB",
         "SUB"};
-
-        SoftwareSerial* gsm_serial = NULL;
+        SoftwareSerial gsm_serial = SoftwareSerial(1,0);
         void sub_handler(String sub_raw);
         String to_hex(String string);
         void print_heading(String title,bool sub_heading = false);

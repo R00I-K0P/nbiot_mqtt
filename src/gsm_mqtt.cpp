@@ -11,12 +11,10 @@ gsm_mqtt::gsm_mqtt(String server,String port,String topic,void (*subscribe_callb
   Port = port;
   Topic = topic;
   pub_messages = new ArduinoQueue<Message> (10);
-  gsm_serial = new SoftwareSerial(0,1);
   pinMode(14,OUTPUT);
 }
 gsm_mqtt::~gsm_mqtt(){
   delete pub_messages;
-  delete gsm_serial;
 }
 bool OK(String response){
   if(response.indexOf("OK") != -1) return true;
@@ -33,7 +31,7 @@ void gsm_mqtt::power_cycle(){
         cycle = CYCLE::TURN_ON;
         digitalWrite(14,LOW);
         Serial.println("Shut down");
-        gsm_serial->end();
+        gsm_serial.end();
         break;
       }
       case CYCLE::TURN_ON:{
@@ -46,7 +44,7 @@ void gsm_mqtt::power_cycle(){
       case CYCLE::TURN_SETUP:{
         cycle = CYCLE::TURN_OFF;
         Serial.println("restarted");
-        gsm_serial->begin(115200);
+        gsm_serial.begin(2400);
         while(!gsm_serial);
         state_next = STATES::SET_ECHO;
         break;
@@ -57,14 +55,6 @@ void gsm_mqtt::power_cycle(){
 void gsm_mqtt::gsm_mqtt_loop(){
   blink(state+1);
   if(state != state_next){
-    String response = write_data("AT+CBC");
-    if(response != ""){
-        String vol = response.substring(response.indexOf(",")+1);
-        batt_voltage = vol.toInt();
-        Serial.println("Battery voltage:"+String(batt_voltage));
-    }else{
-      return;
-    }
     print_heading(states[state]+" -> "+states[state_next]);
     state = state_next;
   }
@@ -123,7 +113,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
     case STATES::NEW_MQTT_INSTANCE:{
-      String response = write_data("AT+CMQNEW=\""+Server+"\","+Port+",12000,1024");
+      String response = write_data("AT+CMQNEW=\""+Server+"\","+Port+",60000,1024");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::MQTT_CONNECTING;
@@ -134,7 +124,7 @@ void gsm_mqtt::gsm_mqtt_loop(){
       break;
     }
     case STATES::MQTT_CONNECTING:{
-      String response = write_data("AT+CMQCON=0,3,\""+String(random(1000000))+"\",600,1,0");
+      String response = write_data("AT+CMQCON=0,3,\""+String(random(1000000))+"\",64800,1,0");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::MQTT_SUBSCRIBING;
@@ -255,7 +245,7 @@ String gsm_mqtt::write_data(String data){
         print_heading("Data",true);
         Serial.println(data);
       }
-      gsm_serial->println(data);
+      gsm_serial.println(data);
       write_timer = set_time(60000);
       sent = true;
     }else{
@@ -270,14 +260,14 @@ String gsm_mqtt::write_data(String data){
       print_heading("Response",true);
       Serial.println("\""+response+"\"");
     }
-    write_timer = set_time(2000);
+    write_timer = set_time(1000);
     sent = false;
   }
   return response;
 }
 String gsm_mqtt::poll(){
-  if(gsm_serial->available() > 0){
-    String response = gsm_serial->readString();
+  if(gsm_serial.available() > 0){
+    String response = gsm_serial.readString();
 
     if(response.indexOf("+CMQPUB: ") != -1){
       sub_handler(response);
