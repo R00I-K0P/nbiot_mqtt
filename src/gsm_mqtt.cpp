@@ -99,8 +99,17 @@ void gsm_mqtt::gsm_mqtt_loop(){
       }
       break;
     }
-    case STATES::SIGNAL_STRENGTH:{
+     case STATES::SIGNAL_STRENGTH:{
       String response = write_data("AT+CSQ");
+      if(response != ""){
+        if(OK(response)){
+          state_next = STATES::REGISTERED_NETWORKS;
+        }
+      }
+      break;
+    }
+    case STATES::REGISTERED_NETWORKS:{
+      String response = write_data("AT+CREG?");
       if(response != ""){
         if(OK(response)){
           state_next = STATES::APN_CONNECTING_INFO;

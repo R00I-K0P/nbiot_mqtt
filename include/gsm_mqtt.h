@@ -35,6 +35,7 @@ class gsm_mqtt{
         TURNOFF_RF,
         SETAPN,
         TURNON_RF,
+        REGISTERED_NETWORKS,
         SIGNAL_STRENGTH,
         APN_CONNECTING_INFO,
         NEW_MQTT_INSTANCE,
@@ -43,13 +44,14 @@ class gsm_mqtt{
         MQTT_DISCONNECT,
         PUB,
         SUB} state = STATES::POWER_CYCLE ,state_next = STATES::POWER_CYCLE;
-        String states[13] = {
+        String states[14] = {
         "POWER_CYCLE",
         "SET_ECHO",
         "TURNOFF_RF",
         "SETAPN",
         "TURNON_RF",
         "SIGNAL_STRENGTH",
+        "REGISTERED_NETWORKS",
         "APN_CONNECTING_INFO",
         "NEW_MQTT_INSTANCE",
         "MQTT_CONNECTING",
