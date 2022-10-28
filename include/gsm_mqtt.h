@@ -7,7 +7,7 @@ hanco.hw@gmail.com
 #define TRIESOUT 30
 #include <Arduino.h>
 #include <ArduinoQueue.h>
-#include <SoftwareSerial.h>
+#include <hardware/uart.h>
 
 class gsm_mqtt{
     public:
@@ -57,7 +57,7 @@ class gsm_mqtt{
         "MQTT_DISCONNECT",
         "PUB",
         "SUB"};
-        SoftwareSerial gsm_serial = SoftwareSerial(1,0);
+        UART gsm_serial = UART(0,1);
         void sub_handler(String sub_raw);
         String to_hex(String string);
         void print_heading(String title,bool sub_heading = false);
